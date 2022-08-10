@@ -1,0 +1,161 @@
+
+const val FRONT_PRICE = 10
+const val BACK_PRICE = 8
+const val NORMAL = 60
+
+//общая функция
+fun main() {
+
+    println("Enter the number of rows:")
+    val rows = readln().toInt()
+    println("Enter the number of seats in each row:")
+    val seats = readln().toInt()
+
+
+    val mutList = mutableListOf<MutableList<String>>()
+    for (i in 0 until rows) {
+        mutList.add(MutableList(seats) { "S" })
+    }
+
+
+    //печать всех мест
+    fun showSeats() {
+        println("Cinema:")
+// Горизонтальный отсчёт
+        print("  ")
+        for (i in 1..seats) {
+            print("$i ")
+        }
+        println()
+
+// Отображение всех мест
+        for (i in 0 until rows) {
+            print("${i + 1} ")
+            for (j in 0 until seats) {
+                print("${mutList[i][j]} ")
+            }
+            println()
+        }
+        println()
+
+    }
+
+    var countBuyedTickets = 0
+    var currentIncome = 0
+    // Ввод желаемого места
+
+    var b = 0
+
+    fun buyTickets() {
+        try {
+            while (true) {
+                println("Enter a row number:")
+                val rowsInd = readln().toInt()
+                println("Enter a seat number in that row:")
+                val seatsInd = readln().toInt()
+                b = rowsInd
+                if (mutList[rowsInd - 1][seatsInd - 1] !== "B") {
+                    mutList[rowsInd - 1][seatsInd - 1] = "B"
+
+                    // Цена билета
+                    if (rows * seats < NORMAL) {
+                        println("Ticket price: $$FRONT_PRICE")
+                        currentIncome += FRONT_PRICE
+
+                    } else {
+
+                        val frontRows = rows / 2
+
+                        val backRows = rows - frontRows
+
+                        if (rowsInd <= frontRows) {
+                            println("Ticket price: $$FRONT_PRICE")
+                            currentIncome += FRONT_PRICE
+                        } else {
+                            println("Ticket price: $$BACK_PRICE")
+                            currentIncome += BACK_PRICE
+                        }
+
+                    }
+                    ++countBuyedTickets
+                    break
+                } else {
+                    println("That ticket has already been purchased!")
+                }
+
+            }
+        } catch (e: java.lang.IndexOutOfBoundsException) {
+            println("Wrong input!")
+            println(buyTickets())
+
+        }
+        println()
+    }
+
+
+    fun statistics() {
+        val buedTickets = countBuyedTickets
+        var totalIncome = rows * seats * currentIncome
+        var v = rows * seats
+        var percentage: Float = (buedTickets*100).toFloat() / v
+        var formatPercentage = "%.2f".format(percentage)
+        if (buedTickets.toInt() == 0) {
+            formatPercentage = "0.00"
+        }
+
+        val frontRows = rows / 2
+        val backRows = rows - frontRows
+        var a = 0
+
+        if (rows * seats <= NORMAL) {
+            a = FRONT_PRICE
+            totalIncome = rows * seats * a
+        }
+        if (rows % 2 == 1) {
+            totalIncome = (rows / 2 * seats) * FRONT_PRICE + ((rows - rows / 2) * seats) * BACK_PRICE
+        } else {
+
+            a = BACK_PRICE
+            totalIncome = rows * seats * a
+        }
+        println("Number of purchased tickets: ${buedTickets}")
+        println("Percentage: ${formatPercentage}%")
+        println("Current income: $$currentIncome")
+        println("Total income: $$totalIncome")
+
+    }
+        while (true) {
+            println("1.Show the seats")
+            println("2.Buy a ticket")
+            println("3.Statistics")
+            println("0.Exit")
+
+            val answer = readln().toInt()
+
+            if (answer == 1) {
+                showSeats()
+
+            } else if (answer == 2) {
+                buyTickets()
+
+            } else if (answer == 3) {
+                statistics()
+
+            } else {
+                break
+            }
+
+        }
+
+
+}
+
+
+
+
+
+
+
+
+
+
